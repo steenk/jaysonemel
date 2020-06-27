@@ -1,8 +1,5 @@
 package com.steenklingberg.jsonml;
 
-import com.steenklingberg.json.JsonParser;
-import com.steenklingberg.json.JsonPointer;
-import com.steenklingberg.json.JsonValue;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

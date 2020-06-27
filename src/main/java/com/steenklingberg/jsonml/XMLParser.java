@@ -1,4 +1,4 @@
-package com.steenklingberg.jsonml;
+package steenklingberg.jsonml;
 
 import java.io.File;
 import java.io.InputStream;
