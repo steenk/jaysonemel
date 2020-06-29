@@ -30,7 +30,7 @@ public class JsonParser {
 
 	private ArrayList<Token> tokenize (String json) {
 		String[] list = json.split("");
-		ArrayList<Token> array = new ArrayList<Token>();
+		ArrayList<Token> array = new ArrayList<>();
 		Iterator<String> iter = Arrays.stream(list).iterator();
 		String s = null;
 		String p = null;
@@ -43,33 +43,38 @@ public class JsonParser {
 			if (!"\\".equals(p)) {
 				item = map.get(s);
 			}
-			if ("string_delimiter".equals(item)) {
-				intext = !intext;
+			if ("item_delimiter".equals(item)) {
+				intext = false;
+
 			} else
 			if ("pair_delimiter".equals(item) && intext) {
-				item = null;
+				intext = false;
 			} else
 			if ("whitespace".equals(item)) {
-				if (sb.length() == 0 || ws.length() > 0) {
+				if (!intext || ws.length() > 0) {
 					ws.append(s);
+					//s = "";
 				}
 				item = null;
 			}
 			if (item != null) {
+				if (!intext && ws.length() > 0) {
+					array.add(new Token("whitespace", ws.toString()));
+					ws = new StringBuilder();
+				} else
 				if (sb.length() > 0) {
-					array.add(new Token("text", sb.toString()));
+					array.add(new Token("text", sb.toString().trim()));
 					sb = new StringBuilder();
 				}
 				Token token = new Token(item, null);
 				array.add(token);
-				if (ws.length() > 0) {
-					array.add(new Token("whitespace", ws.toString()));
-					ws = new StringBuilder();
+				if ("string_delimiter".equals(item)) {
+					intext = !intext;
 				}
+
 			} else {
 				sb.append(s);
 			}
-			
 			p = s;
 		}
 		return array;
@@ -120,9 +125,7 @@ public class JsonParser {
 					break;
 				case "string_delimiter": isString = !isString;
 					break;
-				case "whitespace": if (!isString) {
-						//System.out.println("WHITESPACE");
-					}
+				case "whitespace": //System.out.println("WHITESPACE");
 					break;
 				case "pair_delimiter": isValue = true;
 					break;
@@ -165,8 +168,10 @@ public class JsonParser {
 
 	public JsonValue parse(String json) {
 		ArrayList<Token> tokens = tokenize(json);
-		JsonValue jv = build(tokens);
-		return jv;
+		/*for (Token token : tokens) {
+			System.out.println("<" + token.getType() + "> " + token.getValue());
+		}*/
+		return build(tokens);
 	}
 }
 

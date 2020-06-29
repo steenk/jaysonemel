@@ -32,6 +32,20 @@ class XMLParserTest {
     }
 
     @Test
+    public void parseXmlWithWhitespaces () {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <a a1=\"100\"><b>Alice</b> <b>Martin\n</b> <b/>\t</a>";
+        String expected = "[\"a\",{\"a1\":\"100\"},[\"b\",\"Alice\"],[\"b\",\"Martin\"],[\"b\"]]";
+        InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+        try {
+            JsonMlHandler handler = XMLParser.parse(stream);
+            String jsonmlStr = handler.getJsonMlString();
+            assertEquals(expected, jsonmlStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void parseXmlAndPathFind () {
 
     }

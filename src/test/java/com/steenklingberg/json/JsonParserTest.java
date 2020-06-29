@@ -10,7 +10,17 @@ class JsonParserTest {
         String raw = "{\"a/1\":{\"b\":123,\"c\":[true,false,true]}}";
         JsonParser parser = new JsonParser();
         JsonValue json = parser.parse(raw);
+        System.out.println(json.toString());
         assertEquals(raw, json.toString());
+    }
+
+    @Test
+    public void parseJsonWithWhitespaces () {
+        String raw = "{\"a/1\":{\"b\":123, \"c\": [true,false,true] } }";
+        String expected = "{\"a/1\":{\"b\":123,\"c\":[true,false,true]}}";
+        JsonParser parser = new JsonParser();
+        JsonValue json = parser.parse(raw);
+        assertEquals(expected, json.toString());
     }
 
     @Test
