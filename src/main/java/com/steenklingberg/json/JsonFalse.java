@@ -10,6 +10,10 @@ public class JsonFalse implements JsonValue {
 		return false;
 	}
 
+	public boolean getBooleanValue () {
+		return false;
+	}
+
 	@Override
 	public String getType () {
 		return "false";

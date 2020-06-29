@@ -1,16 +1,39 @@
 package com.steenklingberg.jsonml;
 
+import com.steenklingberg.json.*;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class XMLParserTest {
+
+
     @Test
-    public void parseXml () {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<person id=\"1000\">\n")
-                .append("    <firstName>Robert</firstName>")
-                .append("    <lastName>Smith</lastName>")
-                .append("</person>");
+    public void parseXmlAndJsonString () {
+        try {
+            String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><a a1=\"100\"><b>Alice</b><b>Martin</b><b/><c/></a>";
+            String expected = "{\"a\":{\"@a1\":100,\"b\":[\"Alice\",\"Martin\",null],\"c\":null}}";
+            InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+            JsonMlHandler handler = XMLParser.parse(stream);
+
+            String jsonmlStr = handler.getJsonMlString();
+            JsonMl jsonml = new JsonMl((jsonmlStr));
+            String json = jsonml.getJsonString();
+            assertEquals(expected, json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void parseXmlAndPathFind () {
+
     }
 
 }

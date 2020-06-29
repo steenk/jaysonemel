@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Arrays;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class JsonParser {
 
@@ -23,6 +24,7 @@ public class JsonParser {
         put("{", "start_object");
         put("}", "end_object");
     }};
+	static Pattern number = Pattern.compile("^-?\\d+\\.?\\d*([eE][\\+-]?\\d+)?");
 
 	public JsonParser () { }
 
@@ -125,8 +127,8 @@ public class JsonParser {
 				case "pair_delimiter": isValue = true;
 					break;
 				case "text": if ("array".equals(stack.peek().getType())) {
-						if (isString) {
-							((JsonArray)stack.peek()).add(new JsonString(token.getValue()));
+						if (number.matcher(token.getValue()).matches()) {
+							((JsonArray)stack.peek()).add(new JsonNumber(token.getValue()));
 						} else if (token.getValue().equals("true")) {
 							((JsonArray)stack.peek()).add(new JsonTrue());
 						} else if (token.getValue().equals("false")) {
@@ -134,14 +136,14 @@ public class JsonParser {
 						} else if (token.getValue().equals("null")) {
 							((JsonArray)stack.peek()).add(new JsonNull());
 						} else if (token.getValue().trim().length() > 0) {
-							((JsonArray)stack.peek()).add(new JsonNumber(token.getValue()));
+							((JsonArray)stack.peek()).add(new JsonString(token.getValue()));
 						}
 					} else if ("object".equals(stack.peek().getType())) {
 						if (!isValue) {
 							key = token.getValue();
 						} else {
-							if (isString) {
-								((JsonObject)stack.peek()).put(key, new JsonString(token.getValue()));
+							if (number.matcher(token.getValue()).matches()) {
+								((JsonObject)stack.peek()).put(key, new JsonNumber(token.getValue()));
 							} else if (token.getValue().equals("true")) {
 								((JsonObject)stack.peek()).put(key, new JsonTrue());
 							} else if (token.getValue().equals("false")) {
@@ -149,7 +151,7 @@ public class JsonParser {
 							} else if (token.getValue().equals("null")) {
 								((JsonObject)stack.peek()).put(key, new JsonNull());
 							} else if (token.getValue().trim().length() > 0) {
-								((JsonObject)stack.peek()).put(key, new JsonNumber(token.getValue()));
+								((JsonObject)stack.peek()).put(key, new JsonString(token.getValue()));
 							}
 							isValue = false;
 							key = null;

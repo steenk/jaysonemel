@@ -10,6 +10,10 @@ public class JsonTrue implements JsonValue {
 		return true;
 	}
 
+	public boolean getBooleanValue () {
+		return true;
+	}
+
 	@Override
 	public String getType () {
 		return "true";

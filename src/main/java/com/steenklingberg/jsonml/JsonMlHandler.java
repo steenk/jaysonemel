@@ -1,4 +1,4 @@
-package steenklingberg.jsonml;
+package com.steenklingberg.jsonml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +8,14 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import java.util.Stack;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class JsonMlHandler extends DefaultHandler {
 
 	StringBuilder sb = new StringBuilder();
 	Stack<String> stack = new Stack<String>();
 	HashMap<String, String> hash = new HashMap<String, String>();
+	static Pattern number = Pattern.compile("^-?\\d+\\.?\\d*([eE][\\+-]?\\d+)?");
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -63,9 +65,16 @@ public class JsonMlHandler extends DefaultHandler {
 	public void characters(char ch[], int start, int length) throws SAXException {
 		String str = new String(ch, start, length).trim();
 		if (str.length() > 0) {
-			sb.append(",\"");
-			sb.append(str.trim());
-			sb.append("\"");
+			//if (sb.length() > 0) {
+			//	sb.append(",");
+			//}
+			if (number.matcher(str).matches() || str.equals("null") || str.equals("false") || str.equals("true")) {
+				sb.append(str.trim());
+			} else {
+				sb.append(",\"");
+				sb.append(str.trim());
+				sb.append("\"");
+			}
 			String key = stack.peek();
 			key = key + "[" + (Integer.parseInt(hash.get(key + ".size()")) - 1) + "]";
 			String content = hash.get(key);
@@ -77,7 +86,7 @@ public class JsonMlHandler extends DefaultHandler {
 		}
 	}
 
-	public String getJsonString () {
+	public String getJsonMlString () {
 		return sb.toString();
 	}
 

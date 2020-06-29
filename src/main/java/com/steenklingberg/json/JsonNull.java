@@ -16,6 +16,10 @@ public class JsonNull implements JsonValue {
 		return toString();
 	}
 
+	public Object getValue() {
+		return null;
+	}
+
 	public String toString () {
 		return "null";
 	}

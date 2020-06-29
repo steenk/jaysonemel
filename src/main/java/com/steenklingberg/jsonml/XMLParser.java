@@ -1,4 +1,4 @@
-package steenklingberg.jsonml;
+package com.steenklingberg.jsonml;
 
 import java.io.File;
 import java.io.InputStream;
@@ -34,7 +34,7 @@ public class XMLParser {
         JsonMlHandler handler = new JsonMlHandler();
         saxParser.parse(new File(args[0]), handler);
 
-        String json  = handler.getJsonString();
+        String json  = handler.getJsonMlString();
         System.out.println(json);
 
     } catch (ParserConfigurationException | SAXException | IOException e) {

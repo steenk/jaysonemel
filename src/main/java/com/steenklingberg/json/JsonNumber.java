@@ -25,6 +25,10 @@ public class JsonNumber implements JsonValue {
 		return number;
 	}
 
+	public float getFloatValue () {
+		return number;
+	}
+
 	public void setValue (float number) {
 		this.number = number;
 	}
