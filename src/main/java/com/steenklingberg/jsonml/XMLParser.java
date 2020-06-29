@@ -28,18 +28,18 @@ public class XMLParser {
     }
 
     public static void main(String[] args) {
-    SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-    try {
-        SAXParser saxParser = saxParserFactory.newSAXParser();
-        JsonMlHandler handler = new JsonMlHandler();
-        saxParser.parse(new File(args[0]), handler);
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+        try {
+            SAXParser saxParser = saxParserFactory.newSAXParser();
+            JsonMlHandler handler = new JsonMlHandler();
+            saxParser.parse(new File(args[0]), handler);
 
-        String json  = handler.getJsonMlString();
-        System.out.println(json);
+            String json  = handler.getJsonMlString();
+            System.out.println(json);
 
-    } catch (ParserConfigurationException | SAXException | IOException e) {
-        e.printStackTrace();
-    }
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
