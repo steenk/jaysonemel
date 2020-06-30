@@ -9,6 +9,10 @@ public class JsonArray extends ArrayList<JsonValue> implements JsonValue, JsonSt
 		super();
 	}
 
+	public JsonArray (int size) {
+		super(size);
+	}
+
 	public JsonValue getValue (int index) {
 		return this.get(index);
 	}

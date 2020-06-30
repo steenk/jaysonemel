@@ -15,7 +15,7 @@ public class JsonMlHandler extends DefaultHandler {
 	StringBuilder sb = new StringBuilder();
 	Stack<String> stack = new Stack<String>();
 	HashMap<String, String> hash = new HashMap<String, String>();
-	static Pattern number = Pattern.compile("^-?\\d+\\.?\\d*([eE][\\+-]?\\d+)?");
+	static Pattern number = Pattern.compile("^-?\\d+\\.?\\d*([eE][+-]?\\d+)?$");
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -65,9 +65,6 @@ public class JsonMlHandler extends DefaultHandler {
 	public void characters(char ch[], int start, int length) throws SAXException {
 		String str = new String(ch, start, length).trim();
 		if (str.length() > 0) {
-			//if (sb.length() > 0) {
-			//	sb.append(",");
-			//}
 			if (number.matcher(str).matches() || str.equals("null") || str.equals("false") || str.equals("true")) {
 				sb.append(str.trim());
 			} else {
@@ -91,7 +88,7 @@ public class JsonMlHandler extends DefaultHandler {
 	}
 
 	public String getPath (String path) {
-		if (path.indexOf("@") > -1 || path.endsWith("]") || path.endsWith(".size()")) {
+		if (path.contains("@") || path.endsWith("]") || path.endsWith(".size()")) {
 			return hash.get(path);
 		} else {
 			return hash.get(path + "[0]");
