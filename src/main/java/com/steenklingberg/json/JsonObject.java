@@ -27,6 +27,30 @@ public class JsonObject extends HashMap<String, JsonValue> implements JsonValue,
 		this.put(key.toString(), value);
 	}
 
+	public void setValue (String key, String value) {
+		if (value == null) {
+			this.put(key, new JsonNull());
+		} else {
+			this.put(key, new JsonString(value));
+		}
+	}
+
+	public void setValue (String key, int value) {
+		this.put(key, new JsonNumber(value));
+	}
+
+	public void setValue (String key, float value) {
+		this.put(key, new JsonNumber(value));
+	}
+
+	public void setValue (String key, boolean value) {
+		if (value) {
+			this.put(key, new JsonTrue());
+		} else {
+			this.put(key, new JsonFalse());
+		}
+	}
+
 	@Override
 	public String getType () {
 		return "object";

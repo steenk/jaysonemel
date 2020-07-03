@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,7 +46,22 @@ class XMLParserTest {
 
     @Test
     public void parseXmlAndPathFind () {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><a><b><c>1</c><c>3</c></b><b lang=\"en\"><c>2</c><c>4</c></b></a>";
+        InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+        try {
+            JsonMlHandler handler = XMLParser.parse(stream);
+            String jsonmlStr = handler.getJsonMlString();
+            SortedMap<String, String> set = handler.getSortedMap("a[0].b");
+            Map.Entry<String,String> entry = null;
+            for (Iterator<Map.Entry<String, String>> it = set.entrySet().iterator(); it.hasNext(); ) {
+                entry = it.next();
+                System.out.println(entry.getKey() + " => " + entry.getValue());
+            }
+            System.out.println(set.get("a[0].b[1].c.name()"));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

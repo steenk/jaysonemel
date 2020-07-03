@@ -1,5 +1,5 @@
 Name: /com/steenklingberg/jsonml
 Main-Class: com.steenklingberg.jsonml.XMLParser
 Specification-Title: "JSON array representation of XML"
-Specification-Version: "0.3.0"
+Specification-Version: "0.4.0"
 Specification-Vendor: "Steen Klingberg"

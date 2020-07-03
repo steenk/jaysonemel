@@ -50,7 +50,7 @@ public class JsonMl {
 		return true;
 	}
 
-	private String element (JsonValue json) {
+	private static String element (JsonValue json) {
 		if (json.getType() != "array") {
 			return "";
 		}
@@ -115,6 +115,10 @@ public class JsonMl {
 			return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + element(root);
 		}
 		return null;
+	}
+
+	public static String toXml(JsonArray jsonml) {
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + element(jsonml);
 	}
 
 	private String stringifyAttr (JsonObject attr) {

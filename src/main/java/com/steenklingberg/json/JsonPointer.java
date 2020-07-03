@@ -42,6 +42,30 @@ public class JsonPointer {
 		}
 	}
 
+	public boolean createOrUpdate (String pointer, String string) {
+		return createOrUpdate(pointer, new JsonString(string));
+	}
+
+	public boolean createOrUpdate (String pointer, int number) {
+		return createOrUpdate(pointer, new JsonNumber(number));
+	}
+
+	public boolean createOrUpdate (String pointer, float number) {
+		return createOrUpdate(pointer, new JsonNumber(number));
+	}
+
+	public boolean createOrUpdate (String pointer, boolean bool) {
+		if (bool) {
+			return createOrUpdate(pointer, new JsonTrue());
+		} else {
+			return createOrUpdate(pointer, new JsonFalse());
+		}
+	}
+
+	public boolean createOrUpdate (String pointer) {
+		return createOrUpdate(pointer, new JsonNull());
+	}
+
 	public boolean createOrUpdate (String pointer, JsonValue value) {
 		boolean success = false;
 		if (!pointer.startsWith("/")) pointer = "/" + pointer;

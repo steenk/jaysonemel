@@ -1,21 +1,19 @@
 package com.steenklingberg.jsonml;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import java.util.Stack;
-import java.util.HashMap;
+
 import java.util.regex.Pattern;
 
 public class JsonMlHandler extends DefaultHandler {
 
 	StringBuilder sb = new StringBuilder();
 	Stack<String> stack = new Stack<String>();
-	HashMap<String, String> hash = new HashMap<String, String>();
-	static Pattern number = Pattern.compile("^-?\\d+\\.?\\d*([eE][+-]?\\d+)?$");
+	TreeMap<String, String> hash = new TreeMap<String, String>();
+	static Pattern number = Pattern.compile("^-?[1-9]\\d*\\.?\\d*([eE][+-]?\\d+)?$");
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -31,7 +29,9 @@ public class JsonMlHandler extends DefaultHandler {
 			size = Integer.parseInt(hash.get(key + ".size()")) + 1;
 		}
 		hash.put(key + ".size()", Integer.toString(size));
-		stack.push(key);
+		hash.put(key + ".name()", qName);
+		//stack.push(key);
+		stack.push(key + "[" + (size - 1) + "]");
 		sb.append("[\"");
 		sb.append(qName);
 		sb.append("\"");
@@ -46,10 +46,8 @@ public class JsonMlHandler extends DefaultHandler {
 				if (attributes.getLength() > i + 1) {
 					sb.append(",");
 				}
-				hash.put(stack.peek() + "[" + (size - 1) + "].@" + attributes.getQName(i), attributes.getValue(i));
-				if (size == 1) {
-					hash.put(stack.peek() + ".@" + attributes.getQName(i), attributes.getValue(i));
-				}
+				//hash.put(stack.peek() + "[" + (size - 1) + "].@" + attributes.getQName(i), attributes.getValue(i));
+				hash.put(stack.peek() + ".@" + attributes.getQName(i), attributes.getValue(i));
 			}
 			sb.append("}");
 		}
@@ -66,17 +64,18 @@ public class JsonMlHandler extends DefaultHandler {
 		String str = new String(ch, start, length).trim();
 		if (str.length() > 0) {
 			if (number.matcher(str).matches() || str.equals("null") || str.equals("false") || str.equals("true")) {
-				sb.append(str.trim());
+				sb.append(",")
+						.append(str.trim());
 			} else {
 				sb.append(",\"");
-				sb.append(str.trim());
+				sb.append(str.trim().replace("\"","\\\""));
 				sb.append("\"");
 			}
 			String key = stack.peek();
-			key = key + "[" + (Integer.parseInt(hash.get(key + ".size()")) - 1) + "]";
+			//key = key + "[" + (Integer.parseInt(hash.get(key + ".size()")) - 1) + "]";
 			String content = hash.get(key);
 			if (content != null) {
-				hash.put(key, content + " " + str.trim());
+				hash.put(key, content + str.trim()); // space in between?
 			} else {
 				hash.put(key, str.trim());
 			}
@@ -87,8 +86,18 @@ public class JsonMlHandler extends DefaultHandler {
 		return sb.toString();
 	}
 
+	public Set<String> getKeySet() {
+		//Set<String> set = hash.keySet();
+		return hash.keySet();
+	}
+
+	public SortedMap<String, String> getSortedMap(String key) {
+		//return hash.subMap(key, key.replaceFirst(".$", "^"));
+		return hash.subMap(key, key + "~");
+	}
+
 	public String getPath (String path) {
-		if (path.contains("@") || path.endsWith("]") || path.endsWith(".size()")) {
+		if (path.contains("@") || path.endsWith("]") || path.endsWith(".size()") || path.endsWith(".name()")) {
 			return hash.get(path);
 		} else {
 			return hash.get(path + "[0]");
